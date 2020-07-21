@@ -73,9 +73,11 @@ socket.on('message', function(message) {
     if (!isInitiator && !isStarted) {
       maybeStart();
     }
+    console.log("try set remote desc: type offer");
     pc.setRemoteDescription(new RTCSessionDescription(message));
     doAnswer();
   } else if (message.type === 'answer' && isStarted) {
+    console.log("try set remote desc: type answer");
     pc.setRemoteDescription(new RTCSessionDescription(message));
   } else if (message.type === 'candidate' && isStarted) {
     var candidate = new RTCIceCandidate({
