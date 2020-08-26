@@ -13,6 +13,7 @@ var app = http.createServer(function(req, res) {
 
 var io = socketIO.listen(app);
 io.sockets.on('connection', function(socket) {
+  console.log("Server: version 1");
 
   // convenience function to log server messages on the client
   function log() {
@@ -63,7 +64,15 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('bye', function(){
-    console.log('received bye');
+    console.log('Server: received bye');
+  });
+
+  socket.on('end', function (){
+    console.log('Server: received end');
+  });
+
+  socket.on('disconnect', function (){
+    console.log('Server: received disconnect');
   });
 
 });
