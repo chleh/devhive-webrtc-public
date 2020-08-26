@@ -71,8 +71,9 @@ io.sockets.on('connection', function(socket) {
     console.log('Server: received end');
   });
 
-  socket.on('disconnect', function (){
+  socket.on('disconnect', function () {
     console.log('Server: received disconnect');
+    socket.broadcast.emit('message', 'bye');
   });
 
 });
