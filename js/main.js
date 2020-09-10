@@ -1,5 +1,8 @@
 'use strict';
 
+import {createPeerConnection} from "./PeerConnectionHandler";
+import {sendMessage} from "./messageHandler";
+
 var isChannelReady = false;
 var isInitiator = false;
 var isStarted = false;
@@ -26,8 +29,7 @@ var sdpConstraints = {
 var room = 'foo';
 // Could prompt for room name:
 // room = prompt('Enter room name:');
-
-var socket = io.connect();
+let socket = io.connect();
 
 if (room !== '') {
   socket.emit('create or join', room);
@@ -60,11 +62,6 @@ socket.on('log', function(array) {
 
 ////////////////////////////////////////////////
 
-function sendMessage(message) {
-  console.log('Client sending message: ', message);
-  socket.emit('message', message);
-}
-
 // This client receives a message
 socket.on('message', function(message) {
   console.log('Client received message:', message);
@@ -94,7 +91,7 @@ socket.on('message', function(message) {
 ////////////////////////////////////////////////////
 
 var localVideo = document.querySelector('#localVideo');
-var remoteVideo = document.querySelector('#remoteVideo');
+
 
 navigator.mediaDevices.getUserMedia({
   audio: false,
@@ -109,7 +106,7 @@ function gotStream(stream) {
   console.log('Adding local stream.');
   localStream = stream;
   localVideo.srcObject = stream;
-  sendMessage('got user media');
+  sendMessage(socket, 'got user media');
   if (isInitiator) {
     maybeStart();
   }
@@ -142,38 +139,11 @@ function maybeStart() {
 }
 
 window.onbeforeunload = function() {
-  sendMessage('bye');
+  sendMessage(socket, 'bye');
 };
 
 /////////////////////////////////////////////////////////
 
-function createPeerConnection() {
-  try {
-    pc = new RTCPeerConnection(null);
-    pc.onicecandidate = handleIceCandidate;
-    pc.onaddstream = handleRemoteStreamAdded;
-    pc.onremovestream = handleRemoteStreamRemoved;
-    console.log('Created RTCPeerConnnection');
-  } catch (e) {
-    console.log('Failed to create PeerConnection, exception: ' + e.message);
-    alert('Cannot create RTCPeerConnection object.');
-    return;
-  }
-}
-
-function handleIceCandidate(event) {
-  console.log('icecandidate event: ', event);
-  if (event.candidate) {
-    sendMessage({
-      type: 'candidate',
-      label: event.candidate.sdpMLineIndex,
-      id: event.candidate.sdpMid,
-      candidate: event.candidate.candidate
-    });
-  } else {
-    console.log('End of candidates.');
-  }
-}
 
 function handleCreateOfferError(event) {
   console.log('createOffer() error: ', event);
@@ -231,20 +201,12 @@ function requestTurn(turnURL) {
   }
 }
 
-function handleRemoteStreamAdded(event) {
-  console.log('Remote stream added.');
-  remoteStream = event.stream;
-  remoteVideo.srcObject = remoteStream;
-}
 
-function handleRemoteStreamRemoved(event) {
-  console.log('Remote stream removed. Event: ', event);
-}
 
 function hangup() {
   console.log('Hanging up.');
   stop();
-  sendMessage('bye');
+  sendMessage(socket, 'bye');
 }
 
 function handleRemoteHangup() {
