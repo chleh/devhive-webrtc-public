@@ -8,9 +8,8 @@ var isInitiator = false;
 var isStarted = false;
 var localStream;
 var pc;
-var remoteStream;
-var turnReady;
 
+var localVideo = document.querySelector('#localVideo');
 
 var pcConfig = {
   'iceServers': [{
@@ -22,6 +21,10 @@ var pcConfig = {
 var sdpConstraints = {
   offerToReceiveAudio: true,
   offerToReceiveVideo: true
+};
+
+var constraints = {
+  video: true
 };
 
 /////////////////////////////////////////////
@@ -90,9 +93,6 @@ socket.on('message', function(message) {
 
 ////////////////////////////////////////////////////
 
-var localVideo = document.querySelector('#localVideo');
-
-
 navigator.mediaDevices.getUserMedia({
   audio: false,
   video: true
@@ -106,23 +106,13 @@ function gotStream(stream) {
   console.log('Adding local stream.');
   localStream = stream;
   localVideo.srcObject = stream;
-  sendMessage(socket, 'got user media');
+  sendMessage('got user media');
   if (isInitiator) {
     maybeStart();
   }
 }
 
-var constraints = {
-  video: true
-};
-
 console.log('Getting user media with constraints', constraints);
-
-/*if (location.hostname !== 'localhost') {
-  requestTurn(
-    'https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913'
-  );
-}*/
 
 function maybeStart() {
   console.log('>>>>>>> maybeStart() ', isStarted, localStream, isChannelReady);
@@ -139,11 +129,10 @@ function maybeStart() {
 }
 
 window.onbeforeunload = function() {
-  sendMessage(socket, 'bye');
+  sendMessage('bye');
 };
 
 /////////////////////////////////////////////////////////
-
 
 function handleCreateOfferError(event) {
   console.log('createOffer() error: ', event);
@@ -172,41 +161,8 @@ function onCreateSessionDescriptionError(error) {
   trace('Failed to create session description: ' + error.toString());
 }
 
-function requestTurn(turnURL) {
-  var turnExists = false;
-  for (var i in pcConfig.iceServers) {
-    if (pcConfig.iceServers[i].urls.substr(0, 5) === 'turn:') {
-      turnExists = true;
-      turnReady = true;
-      break;
-    }
-  }
-  if (!turnExists) {
-    console.log('Getting TURN server from ', turnURL);
-    // No TURN server. Get one from computeengineondemand.appspot.com:
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        var turnServer = JSON.parse(xhr.responseText);
-        console.log('Got TURN server: ', turnServer);
-        pcConfig.iceServers.push({
-          'urls': 'turn:' + turnServer.username + '@' + turnServer.turn,
-          'credential': turnServer.password
-        });
-        turnReady = true;
-      }
-    };
-    xhr.open('GET', turnURL, true);
-    xhr.send();
-  }
-}
-
-
-
-function hangup() {
-  console.log('Hanging up.');
-  stop();
-  sendMessage(socket, 'bye');
+export function getSocket() {
+  return socket;
 }
 
 function handleRemoteHangup() {

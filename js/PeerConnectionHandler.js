@@ -1,3 +1,5 @@
+import {sendMessage} from "./messageHandler";
+
 export function createPeerConnection() {
     try {
         let pc = new RTCPeerConnection(null);
