@@ -1,6 +1,6 @@
 'use strict';
 
-import {sendMessage as sendMessage} from "./messageHandler";
+import sendMessage from "./messageHandler";
 import Session from "./session";
 
 var localStream;
