@@ -1,7 +1,5 @@
-'use strict';
-
-import {sendMessage} from "./messageHandler";
-import Session from "./session";
+import { sendMessage } from "./modules/messageHandler";
+import { Session } from "./modules/session";
 
 var session = new Session();
 session.localVideo = document.querySelector('#localVideo');

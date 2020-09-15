@@ -1,4 +1,4 @@
-import {getSocket} from "./main";
+import {getSocket} from "../main";
 
 function sendMessage (message) {
     let socket = getSocket();

@@ -1,13 +1,16 @@
 import {createPeerConnection} from "./peerConnectionHandler";
 import {sendMessage} from "./messageHandler";
 
-export default class Session  {
+class Session  {
     isChannelReady = false;
     isInitiator = false;
     isStarted = false;
     pc;
     localStream;
     localVideo;
+
+    constructor() {
+    }
     handleRemoteHangup() {
         console.log('Session terminated.');
         this.stop();
@@ -70,3 +73,5 @@ export default class Session  {
         console.log('createOffer() error: ', event);
     };
 }
+
+export { Session };
