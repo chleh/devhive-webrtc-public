@@ -1,8 +1,8 @@
 import {createPeerConnection} from "./peerConnectionHandler.js";
 import {sendMessage} from "./messageHandler.js";
 
-export var isChannelReady = false;
-export var isInitiator = false;
+export var isChannelReady;
+export var isInitiator;
 var isStarted = false;
 export var pc;
 var localStream;
