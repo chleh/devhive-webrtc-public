@@ -1,6 +1,6 @@
 import { sendMessage } from "./modules/messageHandler.js";
 import { doAnswer } from "./modules/js";
-import {gotStream, handleRemoteHangup, maybeStart, pc} from "./modules/session";
+import {gotStream, handleRemoteHangup, maybeStart, pc, localVideo, isChannelReady, isInitiator} from "./modules/session";
 
 localVideo = document.querySelector('#localVideo');
 
