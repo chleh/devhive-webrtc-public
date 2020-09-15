@@ -7,6 +7,8 @@ class Session  {
         this.isInitiator = false;
         this.isStarted = false;
         this.localStream = new MediaStream();
+
+        this.gotStream  = this.gotStream.bind(this);
     }
     handleRemoteHangup() {
         console.log('Session terminated.');
