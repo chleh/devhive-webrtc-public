@@ -3,15 +3,8 @@
 import sendMessage from "./messageHandler";
 import Session from "./session";
 
-var localStream;
 var session = new Session();
 session.localVideo = document.querySelector('#localVideo');
-
-var pcConfig = {
-  'iceServers': [{
-    'urls': 'stun:stun.l.google.com:19302'
-  }]
-};
 
 // Set up audio and video regardless of what devices are present.
 var sdpConstraints = {
