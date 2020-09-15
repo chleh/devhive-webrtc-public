@@ -1,8 +1,8 @@
 import { sendMessage } from "./modules/messageHandler.js";
-import {gotStream, handleRemoteHangup, maybeStart, pc, isChannelReady, isInitiator} from "./modules/session.js";
+import {gotStream, handleRemoteHangup, maybeStart, setIsChannelReady, pc, isChannelReady, isInitiator} from "./modules/session.js";
 
 
-isChannelReady = false;
+setIsChannelReady(false);
 isInitiator = false;
 
 var pcConfig = {

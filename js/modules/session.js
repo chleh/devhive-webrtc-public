@@ -8,6 +8,9 @@ export var pc;
 var localStream;
 var localVideo = document.querySelector('#localVideo');
 
+export function setIsChannelReady(value) {
+    isChannelReady = value;
+}
 
 export function handleRemoteHangup() {
     console.log('Session terminated.');
