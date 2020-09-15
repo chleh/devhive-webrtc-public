@@ -1,5 +1,5 @@
-import {createPeerConnection} from "./peerConnectionHandler";
-import {sendMessage} from "./messageHandler";
+import {createPeerConnection} from "./peerConnectionHandler.js";
+import {sendMessage} from "./messageHandler.js";
 
 class Session  {
     isChannelReady = false;

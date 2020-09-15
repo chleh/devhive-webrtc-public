@@ -1,4 +1,4 @@
-import {sendMessage} from "./messageHandler";
+import {sendMessage} from "./messageHandler.js";
 
 export function createPeerConnection() {
     try {
