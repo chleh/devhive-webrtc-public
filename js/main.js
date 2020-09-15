@@ -1,19 +1,8 @@
 import { sendMessage } from "./modules/messageHandler.js";
-import {gotStream, handleRemoteHangup, maybeStart, setIsChannelReady, setIsInitiator, pc} from "./modules/session.js";
+import {gotStream, handleRemoteHangup, maybeStart, setIsChannelReady, setIsInitiator, pc, isStarted} from "./modules/session.js";
 
 setIsChannelReady(false);
 setIsInitiator(false);
-
-var pcConfig = {
-  'iceServers': [{
-    'urls': 'stun:stun.l.google.com:19302'
-  }]
-};
-// Set up audio and video regardless of what devices are present.
-var sdpConstraints = {
-  offerToReceiveAudio: true,
-  offerToReceiveVideo: true
-};
 
 /////////////////////////////////////////////
 

@@ -3,7 +3,7 @@ import {sendMessage} from "./messageHandler.js";
 
 export var isChannelReady;
 export var isInitiator;
-var isStarted = false;
+export var isStarted = false;
 export var pc;
 var localStream;
 var localVideo = document.querySelector('#localVideo');
