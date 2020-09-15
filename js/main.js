@@ -1,12 +1,12 @@
 import { sendMessage } from "./modules/messageHandler.js";
-import {gotStream, handleRemoteHangup, maybeStart, setIsChannelReady, setIsInitiator, pc, isStarted} from "./modules/session.js";
+import {gotStream, handleRemoteHangup, maybeStart, setIsChannelReady, setIsInitiator, doAnswer, pc, isStarted, isInitiator} from "./modules/session.js";
 
 setIsChannelReady(false);
 setIsInitiator(false);
 
 /////////////////////////////////////////////
 
-var room = 'foo';
+const room = 'foo';
 // Could prompt for room name:
 // room = prompt('Enter room name:');
 let socket = io.connect();

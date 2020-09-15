@@ -5,8 +5,8 @@ export var isChannelReady;
 export var isInitiator;
 export var isStarted = false;
 export var pc;
-var localStream;
-var localVideo = document.querySelector('#localVideo');
+let localStream;
+const localVideo = document.querySelector('#localVideo');
 
 export function setIsChannelReady(value) {
     isChannelReady = value;
