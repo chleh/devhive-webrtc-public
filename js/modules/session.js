@@ -12,6 +12,10 @@ export function setIsChannelReady(value) {
     isChannelReady = value;
 }
 
+export function setIsInitiator(value) {
+    isInitiator = value;
+}
+
 export function handleRemoteHangup() {
     console.log('Session terminated.');
     stop();

@@ -3,7 +3,7 @@ import {gotStream, handleRemoteHangup, maybeStart, setIsChannelReady, pc, isChan
 
 
 setIsChannelReady(false);
-isInitiator = false;
+setIsInitiator(false);
 
 var pcConfig = {
   'iceServers': [{
@@ -30,7 +30,7 @@ if (room !== '') {
 
 socket.on('created', function(room) {
   console.log('Created room ' + room);
-  isInitiator = true;
+  setIsInitiator(true);
 });
 
 socket.on('full', function(room) {
@@ -40,12 +40,12 @@ socket.on('full', function(room) {
 socket.on('join', function (room){
   console.log('Another peer made a request to join room ' + room);
   console.log('This peer is the initiator of room ' + room + '!');
-  isChannelReady = true;
+  setIsChannelReady(true);
 });
 
 socket.on('joined', function(room) {
   console.log('joined: ' + room);
-  isChannelReady = true;
+  setIsChannelReady(true);
 });
 
 socket.on('log', function(array) {
