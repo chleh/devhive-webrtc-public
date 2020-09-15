@@ -2,13 +2,6 @@ import {createPeerConnection} from "./peerConnectionHandler.js";
 import {sendMessage} from "./messageHandler.js";
 
 class Session  {
-    isChannelReady;
-    isInitiator;
-    isStarted;
-    pc;
-    localStream;
-    localVideo;
-
     constructor() {
         this.isChannelReady = false;
         this.isInitiator = false;
