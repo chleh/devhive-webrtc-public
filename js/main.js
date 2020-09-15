@@ -1,5 +1,5 @@
-import { sendMessage } from "./modules/messageHandler";
-import { Session } from "./modules/session";
+import { sendMessage } from "./modules/messageHandler.js";
+import { Session } from "./modules/session.js";
 
 var session = new Session();
 session.localVideo = document.querySelector('#localVideo');
