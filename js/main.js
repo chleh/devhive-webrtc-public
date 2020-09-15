@@ -1,7 +1,7 @@
 import { sendMessage } from "./modules/messageHandler.js";
-import {gotStream, handleRemoteHangup, maybeStart, pc, localVideo, isChannelReady, isInitiator} from "./modules/session.js";
+import {gotStream, handleRemoteHangup, maybeStart, pc, isChannelReady, isInitiator} from "./modules/session.js";
 
-localVideo = document.querySelector('#localVideo');
+
 
 var pcConfig = {
   'iceServers': [{

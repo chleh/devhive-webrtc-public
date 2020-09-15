@@ -6,7 +6,7 @@ export var isInitiator = false;
 var isStarted = false;
 export var pc;
 var localStream;
-export var localVideo;
+var localVideo = document.querySelector('#localVideo');
 
 
 export function handleRemoteHangup() {
