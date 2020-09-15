@@ -1,9 +1,8 @@
 import { sendMessage } from "./modules/messageHandler.js";
-import { Session } from "./modules/session.js";
+import { doAnswer } from "./modules/js";
+import {gotStream, handleRemoteHangup, maybeStart, pc} from "./modules/session";
 
-var session = new Session();
-session.localVideo = document.querySelector('#localVideo');
-
+localVideo = document.querySelector('#localVideo');
 
 var pcConfig = {
   'iceServers': [{
@@ -30,7 +29,7 @@ if (room !== '') {
 
 socket.on('created', function(room) {
   console.log('Created room ' + room);
-  session.isInitiator = true;
+  isInitiator = true;
 });
 
 socket.on('full', function(room) {
@@ -40,12 +39,12 @@ socket.on('full', function(room) {
 socket.on('join', function (room){
   console.log('Another peer made a request to join room ' + room);
   console.log('This peer is the initiator of room ' + room + '!');
-  session.isChannelReady = true;
+  isChannelReady = true;
 });
 
 socket.on('joined', function(room) {
   console.log('joined: ' + room);
-  session.isChannelReady = true;
+  isChannelReady = true;
 });
 
 socket.on('log', function(array) {
@@ -59,21 +58,21 @@ socket.on('message', function(message) {
   console.log('Client received message:', message);
 
   if (message === 'got user media') {
-    session.maybeStart();
+    maybeStart();
   } else if (message.type === 'offer') {
-    if (!session.isInitiator && !session.isStarted) {
-      session.maybeStart();
+    if (!isInitiator && !isStarted) {
+      maybeStart();
     }
     console.log("try set remote desc: type offer");
-    session.pc.setRemoteDescription(new RTCSessionDescription(message));
-    session.doAnswer();
-  } else if (message.type === 'answer' && session.isStarted) {
+    pc.setRemoteDescription(new RTCSessionDescription(message));
+    doAnswer();
+  } else if (message.type === 'answer' && isStarted) {
     console.log("try set remote desc: type answer");
-    session.pc.setRemoteDescription(new RTCSessionDescription(message));
-  } else if (message.type === 'candidate' && session.isStarted) {
+    pc.setRemoteDescription(new RTCSessionDescription(message));
+  } else if (message.type === 'candidate' && isStarted) {
     addCandidate(message);
-  } else if (message === 'bye' && session.isStarted) {
-    session.handleRemoteHangup();
+  } else if (message === 'bye' && isStarted) {
+    handleRemoteHangup();
   }
 });
 
@@ -82,7 +81,7 @@ function addCandidate(message) {
     sdpMLineIndex: message.label,
     candidate: message.candidate
   });
-  session.pc.addIceCandidate(candidate);
+  pc.addIceCandidate(candidate);
 }
 
 ////////////////////////////////////////////////////
@@ -91,7 +90,7 @@ navigator.mediaDevices.getUserMedia({
   audio: false,
   video: true
 })
-.then(session.gotStream)
+.then(gotStream)
 .catch(function(e) {
   alert('getUserMedia() error: ' + e.name);
 });
