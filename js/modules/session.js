@@ -2,14 +2,17 @@ import {createPeerConnection} from "./peerConnectionHandler.js";
 import {sendMessage} from "./messageHandler.js";
 
 class Session  {
-    isChannelReady = false;
-    isInitiator = false;
-    isStarted = false;
+    isChannelReady;
+    isInitiator;
+    isStarted;
     pc;
     localStream;
     localVideo;
 
     constructor() {
+        this.isChannelReady = false;
+        this.isInitiator = false;
+        this.isStarted = false;
     }
     handleRemoteHangup() {
         console.log('Session terminated.');
