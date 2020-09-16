@@ -1,20 +1,15 @@
 import {createPeerConnection} from "./peerConnectionHandler.js";
 import {sendMessage} from "./messageHandler.js";
 
-var isChannelReady;
-var isInitiator;
+var isChannelReady = false;
+export function setIsChannelReady(value) { isChannelReady = value; }
+var isInitiator = false;
+export function setIsInitiator(value) { isInitiator = value; }
 var isStarted = false;
 var pc;
 let localStream;
 const localVideo = document.querySelector('#localVideo');
 
-export function setIsChannelReady(value) {
-    isChannelReady = value;
-}
-
-export function setIsInitiator(value) {
-    isInitiator = value;
-}
 
 export function messageSwitchBoard(message) {
     console.log('Client received message:', message);
