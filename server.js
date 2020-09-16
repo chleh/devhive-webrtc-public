@@ -29,8 +29,39 @@ io.sockets.on('connection', function(socket) {
     socket.broadcast.emit('message', message);
   });
 
-  socket.on('create or join', function(room) {
+  socket.on('create or join', function() {
     log('Received request to create or join room ' + room);
+
+    let non_full_room = null;
+
+    // search non-full room
+    for (let room in io.sockets.adapter.rooms) {  // TODO maybe random order
+      var clientsInRoom = io.sockets.adapter.rooms[room];
+      var numClients = Object.keys(clientsInRoom.sockets).length;
+      if (numClients < 2) { // free slots avail.
+        non_full_room = room;
+        break;
+      }
+    }
+
+    // create new room
+    if (non_full_room === null) {
+      // gen new room name
+      let new_room_name;
+      do {
+        let randInt = Math.floor(Math.random() * 1e11);
+        new_room_name = '' + randInt;
+        if (new_room_name in io.sockets.adapter.rooms) {
+          // collision
+          continue;
+        } else {
+          break;
+        }
+      } while (true);
+      room = new_room_name;
+    } else {
+      room = non_full_room;
+    }
 
     var clientsInRoom = io.sockets.adapter.rooms[room];
     var numClients = clientsInRoom ? Object.keys(clientsInRoom.sockets).length : 0;
@@ -72,6 +103,8 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('disconnect', function () {
+    // TODO merge single person rooms upon disconnect
+    // TODO cleanup empty rooms
     console.log('Server: received disconnect');
     socket.broadcast.emit('message', 'bye');
   });

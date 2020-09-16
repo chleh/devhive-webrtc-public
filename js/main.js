@@ -2,13 +2,9 @@ import {sendMessage} from "./modules/messageHandler.js";
 import * as session from "./modules/session.js";
 import {socket} from "./modules/socketHandler.js";
 
-const room = 'foo';
-// Could prompt for room name:
-// room = prompt('Enter room name:');
-if (room !== '') {
-  socket.emit('create or join', room);
-  console.log('Attempted to create or  join room', room);
-}
+
+socket.emit('create or join');
+console.log('Attempted to create or join room');
 
 socket.on('created', function(room) {
   console.log('Created room ' + room);
