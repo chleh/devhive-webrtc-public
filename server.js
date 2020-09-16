@@ -43,6 +43,8 @@ io.sockets.on('connection', function(socket) {
       }
     }
 
+    console.log("non_full_room: ", non_full_room);
+
     // create new room
     if (non_full_room === null) {
       // gen new room name
@@ -61,6 +63,8 @@ io.sockets.on('connection', function(socket) {
     } else {
       room = non_full_room;
     }
+
+    console.log("room", room);
 
     log('Received request to create or join room ' + room);
 
