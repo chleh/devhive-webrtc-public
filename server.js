@@ -30,12 +30,11 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('create or join', function() {
-    log('Received request to create or join room ' + room);
-
     let non_full_room = null;
+    let room;
 
     // search non-full room
-    for (let room in io.sockets.adapter.rooms) {  // TODO maybe random order
+    for (room in io.sockets.adapter.rooms) {  // TODO maybe random order
       var clientsInRoom = io.sockets.adapter.rooms[room];
       var numClients = Object.keys(clientsInRoom.sockets).length;
       if (numClients < 2) { // free slots avail.
@@ -62,6 +61,8 @@ io.sockets.on('connection', function(socket) {
     } else {
       room = non_full_room;
     }
+
+    log('Received request to create or join room ' + room);
 
     var clientsInRoom = io.sockets.adapter.rooms[room];
     var numClients = clientsInRoom ? Object.keys(clientsInRoom.sockets).length : 0;
