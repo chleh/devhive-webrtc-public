@@ -1,10 +1,8 @@
-import { sendMessage } from "./modules/messageHandler.js";
-import {gotStream, handleRemoteHangup, maybeStart, setIsChannelReady, setIsInitiator, doAnswer, pc, isStarted, isInitiator} from "./modules/session.js";
+import {sendMessage} from "./modules/messageHandler.js";
+import * as session from "./modules/session.js";
 
-setIsChannelReady(false);
-setIsInitiator(false);
-
-/////////////////////////////////////////////
+session.setIsChannelReady(false);
+session.setIsInitiator(false);
 
 const room = 'foo';
 // Could prompt for room name:
@@ -18,7 +16,7 @@ if (room !== '') {
 
 socket.on('created', function(room) {
   console.log('Created room ' + room);
-  setIsInitiator(true);
+  session.setIsInitiator(true);
 });
 
 socket.on('full', function(room) {
@@ -28,40 +26,38 @@ socket.on('full', function(room) {
 socket.on('join', function (room){
   console.log('Another peer made a request to join room ' + room);
   console.log('This peer is the initiator of room ' + room + '!');
-  setIsChannelReady(true);
+  session.setIsChannelReady(true);
 });
 
 socket.on('joined', function(room) {
   console.log('joined: ' + room);
-  setIsChannelReady(true);
+  session.setIsChannelReady(true);
 });
 
 socket.on('log', function(array) {
   console.log.apply(console, array);
 });
 
-////////////////////////////////////////////////
-
 // This client receives a message
 socket.on('message', function(message) {
   console.log('Client received message:', message);
 
   if (message === 'got user media') {
-    maybeStart();
+    session.maybeStart();
   } else if (message.type === 'offer') {
-    if (!isInitiator && !isStarted) {
-      maybeStart();
+    if (!session.isInitiator && !session.isStarted) {
+      session.maybeStart();
     }
     console.log("try set remote desc: type offer");
-    pc.setRemoteDescription(new RTCSessionDescription(message));
-    doAnswer();
-  } else if (message.type === 'answer' && isStarted) {
+    session.pc.setRemoteDescription(new RTCSessionDescription(message));
+    session.doAnswer();
+  } else if (message.type === 'answer' && session.isStarted) {
     console.log("try set remote desc: type answer");
-    pc.setRemoteDescription(new RTCSessionDescription(message));
-  } else if (message.type === 'candidate' && isStarted) {
+    session.pc.setRemoteDescription(new RTCSessionDescription(message));
+  } else if (message.type === 'candidate' && session.isStarted) {
     addCandidate(message);
-  } else if (message === 'bye' && isStarted) {
-    handleRemoteHangup();
+  } else if (message === 'bye' && session.isStarted) {
+    session.handleRemoteHangup();
   }
 });
 
@@ -70,16 +66,14 @@ function addCandidate(message) {
     sdpMLineIndex: message.label,
     candidate: message.candidate
   });
-  pc.addIceCandidate(candidate);
+  session.pc.addIceCandidate(candidate);
 }
-
-////////////////////////////////////////////////////
 
 navigator.mediaDevices.getUserMedia({
   audio: false,
   video: true
 })
-.then(gotStream)
+.then(session.gotStream)
 .catch(function(e) {
   alert('getUserMedia() error: ' + e.name);
 });
