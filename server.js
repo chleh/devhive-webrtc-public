@@ -43,6 +43,8 @@ io.sockets.on('connection', function(socket) {
       }
     }
 
+    console.log("rooms", Object.keys(io.sockets.adapter.rooms));
+
     console.log("non_full_room: ", non_full_room);
 
     // create new room
