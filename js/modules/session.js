@@ -1,10 +1,10 @@
 import {createPeerConnection} from "./peerConnectionHandler.js";
 import {sendMessage} from "./messageHandler.js";
 
-export var isChannelReady;
-export var isInitiator;
-export var isStarted = false;
-export var pc;
+var isChannelReady;
+var isInitiator;
+var isStarted = false;
+var pc;
 let localStream;
 const localVideo = document.querySelector('#localVideo');
 
@@ -16,7 +16,37 @@ export function setIsInitiator(value) {
     isInitiator = value;
 }
 
-export function handleRemoteHangup() {
+export function messageSwitchBoard(message) {
+    console.log('Client received message:', message);
+
+    if (message === 'got user media') {
+        maybeStart();
+    } else if (message.type === 'offer') {
+        if (!isInitiator && !isStarted) {
+            maybeStart();
+        }
+        console.log("try set remote desc: type offer");
+        pc.setRemoteDescription(new RTCSessionDescription(message));
+        doAnswer();
+    } else if (message.type === 'answer' && isStarted) {
+        console.log("try set remote desc: type answer");
+        pc.setRemoteDescription(new RTCSessionDescription(message));
+    } else if (message.type === 'candidate' && isStarted) {
+        addCandidate(message);
+    } else if (message === 'bye' && isStarted) {
+        handleRemoteHangup();
+    }
+}
+
+function addCandidate(message) {
+    let candidate = new RTCIceCandidate({
+        sdpMLineIndex: message.label,
+        candidate: message.candidate
+    });
+    pc.addIceCandidate(candidate);
+}
+
+function handleRemoteHangup() {
     console.log('Session terminated.');
     stop();
     isInitiator = true;
@@ -30,7 +60,7 @@ function stop() {
     pc = null;
 }
 
-export function maybeStart() {
+function maybeStart() {
     console.log('>>>>>>> maybeStart() ', isStarted, localStream, isChannelReady);
     if (!isStarted && typeof localStream !== 'undefined' && isChannelReady) {
         console.log('>>>>>> creating peer connection');
@@ -59,7 +89,7 @@ function doCall() {
     pc.createOffer(setDescription, handleCreateOfferError);
 }
 
-export function doAnswer() {
+function doAnswer() {
     console.log('Sending answer to peer.');
     pc.createAnswer().then(
         setDescription,

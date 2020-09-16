@@ -8,6 +8,9 @@ const room = 'foo';
 // Could prompt for room name:
 // room = prompt('Enter room name:');
 let socket = io.connect();
+export function getSocket() {
+  return socket;
+}
 
 if (room !== '') {
   socket.emit('create or join', room);
@@ -39,35 +42,7 @@ socket.on('log', function(array) {
 });
 
 // This client receives a message
-socket.on('message', function(message) {
-  console.log('Client received message:', message);
-
-  if (message === 'got user media') {
-    session.maybeStart();
-  } else if (message.type === 'offer') {
-    if (!session.isInitiator && !session.isStarted) {
-      session.maybeStart();
-    }
-    console.log("try set remote desc: type offer");
-    session.pc.setRemoteDescription(new RTCSessionDescription(message));
-    session.doAnswer();
-  } else if (message.type === 'answer' && session.isStarted) {
-    console.log("try set remote desc: type answer");
-    session.pc.setRemoteDescription(new RTCSessionDescription(message));
-  } else if (message.type === 'candidate' && session.isStarted) {
-    addCandidate(message);
-  } else if (message === 'bye' && session.isStarted) {
-    session.handleRemoteHangup();
-  }
-});
-
-function addCandidate(message) {
-  let candidate = new RTCIceCandidate({
-    sdpMLineIndex: message.label,
-    candidate: message.candidate
-  });
-  session.pc.addIceCandidate(candidate);
-}
+socket.on('message', session.messageSwitchBoard);
 
 navigator.mediaDevices.getUserMedia({
   audio: false,
@@ -81,7 +56,3 @@ navigator.mediaDevices.getUserMedia({
 window.onbeforeunload = function() {
   sendMessage('bye');
 };
-
-export function getSocket() {
-  return socket;
-}
