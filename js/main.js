@@ -1,5 +1,6 @@
 import {sendMessage} from "./modules/messageHandler.js";
 import * as session from "./modules/session.js";
+import {socket} from "./modules/socketHandler.js";
 
 session.setIsChannelReady(false);
 session.setIsInitiator(false);
@@ -7,11 +8,6 @@ session.setIsInitiator(false);
 const room = 'foo';
 // Could prompt for room name:
 // room = prompt('Enter room name:');
-let socket = io.connect();
-export function getSocket() {
-  return socket;
-}
-
 if (room !== '') {
   socket.emit('create or join', room);
   console.log('Attempted to create or  join room', room);
